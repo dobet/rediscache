@@ -25,6 +25,12 @@ typedef struct redisDb {
     struct evictionPoolEntry *eviction_pool;    /* Eviction pool of keys */
 } redisDb;
 
+typedef enum {
+    LIST_CONV_AUTO,
+    LIST_CONV_GROWING,
+    LIST_CONV_SHRINKING,
+} list_conv_type;
+
 #define SETKEY_KEEPTTL 1
 #define SETKEY_NO_SIGNAL 2
 #define SETKEY_ALREADY_EXIST 4
@@ -58,7 +64,7 @@ int freeMemoryIfNeeded(redisDb *db);
 int activeExpireCycle(redisDb *db);
 robj *dbUnshareStringValue(redisDb *db, robj *key, robj *o);
 
-
+typedef void (*beforeConvertCB)(void *data);
 
 #ifdef _cplusplus
 }

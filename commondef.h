@@ -83,8 +83,9 @@ typedef long long mstime_t; /* millisecond time type. */
 #define OBJ_HASH_MAX_ZIPLIST_ENTRIES 512
 #define OBJ_HASH_MAX_ZIPLIST_VALUE 64
 #define OBJ_SET_MAX_INTSET_ENTRIES 512
-#define OBJ_ZSET_MAX_ZIPLIST_ENTRIES 2
-#define OBJ_ZSET_MAX_ZIPLIST_VALUE 2
+#define OBJ_ZSET_MAX_ZIPLIST_ENTRIES 0
+#define OBJ_ZSET_MAX_ZIPLIST_VALUE 0
+#define OBJ_HASH_MAX_LISTPACK_VALUE 64
 
 /* Hash structure related defaults */
 #define OBJ_HASH_KEY 1
@@ -122,6 +123,20 @@ typedef long long mstime_t; /* millisecond time type. */
 #define BIT_POS_NO_OFFSET           0
 #define BIT_POS_START_OFFSET        1
 #define BIT_POS_START_END_OFFSET    2
+
+#define HASH_MAX_LISTPACK_ENTRIES   512
+#define HASH_MAX_LISTPACK_VALUE     64
+#define SET_MAX_INTSET_ENTRIES      512
+#define SET_MAX_LISTPACK_ENTRIES    128
+#define SET_MAX_LISTPACK_VALUE      64
+#define ZSET_MAX_LISTPACK_ENTRIES   128
+#define ZSET_MAX_LISTPACK_VALUE     64
+
+/* min/max */
+#undef min
+#undef max
+#define min(a, b) ((a) < (b) ? (a) : (b))
+#define max(a, b) ((a) > (b) ? (a) : (b))
 
 
 // redisdb config
