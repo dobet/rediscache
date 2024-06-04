@@ -50,7 +50,7 @@ robj *lookupKey(redisDb *db, robj *key, int flags);
 robj *lookupKeyRead(redisDb *db, robj *key);
 robj *lookupKeyWrite(redisDb *db, robj *key);
 void dbAdd(redisDb *db, robj *key, robj *val);
-void dbOverwrite(redisDb *db, robj *key, robj *val);
+void dbReplaceValue(redisDb *db, robj *key, robj *val);
 void setKey(redisDb *db, robj *key, robj *val, int flags);
 int dbExists(redisDb *db, robj *key);
 robj *dbRandomKey(redisDb *db);
