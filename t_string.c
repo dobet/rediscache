@@ -166,14 +166,13 @@ static int incrDecrCommand(redisCache *redis_cache, robj *kobj, long long incr, 
     return C_OK;
 }
 
-static int incrbyfloatCommand(redisCache *redis_cache, robj *kobj, robj *vobj, long double incr, long double *ret) {
+static int incrbyfloatCommand(redisCache *redis_cache, robj *kobj, long double incr, long double *ret) {
     long double incr, value;
     robj *o, *new;
 
     o = lookupKeyWrite(redis_cache,kobj);
     if (checkType(o,OBJ_STRING)) return REDIS_INVALID_TYPE;
-    if (getLongDoubleFromObject(o,&value) != C_OK ||
-        getLongDoubleFromObject(vobj,&incr) != C_OK)
+    if (getLongDoubleFromObject(o,&value) != C_OK )
         return REDIS_INVALID_TYPE;
 
     value += incr;
@@ -220,12 +219,7 @@ static int appendCommand(redisCache *redis_cache, robj *kobj, robj *vobj, unsign
     return C_OK;
 }
 
-static int getrangeCommand(redisCache *redis_cache,
-                           robj *kobj,
-                           long start,
-                           long end,
-                           sds *val)
-{
+static int getrangeCommand(redisCache *redis_cache, robj *kobj, long start, long end, sds *val) {
     robj *o;
     char *str, llbuf[32];
     size_t strlen;
@@ -280,7 +274,7 @@ static int setrangeCommand(redisCache *redis_cache, robj *kobj, long offset, rob
         }
 
         /* Return when the resulting string exceeds allowed size */
-        if (checkStringLength(offset+sdslen(value)) != C_OK) return REDIS_OVERFLOW;
+        if (checkStringLength(offset,sdslen(value)) != C_OK) return REDIS_OVERFLOW;
 
         o = createObject(OBJ_STRING,sdsempty());
         dbAdd(redis_cache,kobj,o);
@@ -296,7 +290,7 @@ static int setrangeCommand(redisCache *redis_cache, robj *kobj, long offset, rob
         }
 
         /* Return when the resulting string exceeds allowed size */
-        if (checkStringLength(offset+sdslen(value)) != C_OK) return REDIS_OVERFLOW;
+        if (checkStringLength(offset,sdslen(value)) != C_OK) return REDIS_OVERFLOW;
 
         /* Create a copy when the object is shared or encoded. */
         o = dbUnshareStringValue(redis_cache,kobj,o);
@@ -318,7 +312,7 @@ int RcSet(redisCache cache, robj *key, robj *val, robj *expire)
     }
     redisCache *redis_cache = (redisCache*)cache;
 
-    return setGenericCommand(redis_cache, key, val, expire, UNIT_SECONDS, OBJ_SET_NO_FLAGS);
+    return setGenericCommand(redis_cache, key, val, expire, UNIT_SECONDS, OBJ_NO_FLAGS);
 }
 
 int RcSetnx(redisCache cache, robj *key, robj *val, robj *expire)
