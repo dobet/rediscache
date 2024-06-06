@@ -27,7 +27,20 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-#include "server.h"
+#include <string.h>
+#include <stdlib.h>
+#include <limits.h>
+#include <stdio.h>
+
+#include "redis.h"
+#include "commondef.h"
+#include "commonfunc.h"
+#include "zmalloc.h"
+#include "object.h"
+#include "sds.h"
+#include "db.h"
+#include "solarisfixes.h"
+#include "util.h"
 #include <math.h> /* isnan(), isinf() */
 
 /* Forward declarations */

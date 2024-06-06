@@ -61,9 +61,6 @@ typedef struct {
  * Set Commands
  *----------------------------------------------------------------------------*/
 
-void sunionDiffGenericCommand(client *c, robj **setkeys, int setnum,
-                              robj *dstkey, int op);
-
 /* Factory method to return a set that *can* hold "value". When the object has
  * an integer-encodable value, an intset will be returned. Otherwise a listpack
  * or a regular hash table.
