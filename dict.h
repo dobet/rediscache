@@ -222,7 +222,7 @@ void dictObjectDestructor(dict *privdata, void *val);
 uint64_t dictEncObjHash(const void *key);
 int dictEncObjKeyCompare(dict *privdata, const void *key1, const void *key2);
 
-
+extern dictType objectKeyPointerValueDictType;
 extern dictType setDictType;
 extern dictType zsetDictType;
 
