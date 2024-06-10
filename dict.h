@@ -173,7 +173,7 @@ dictEntry *dictAddRaw(dict *d, void *key, dictEntry **existing);
 void *dictFindPositionForInsert(dict *d, const void *key, dictEntry **existing);
 dictEntry *dictInsertAtPosition(dict *d, void *key, void *position);
 dictEntry *dictAddOrFind(dict *d, void *key);
-int dictReplace(dict *d, void *key, void *val);
+
 int dictDelete(dict *d, const void *key);
 dictEntry *dictUnlink(dict *d, const void *key);
 void dictFreeUnlinkedEntry(dict *d, dictEntry *he);
@@ -181,48 +181,37 @@ dictEntry *dictTwoPhaseUnlinkFind(dict *d, const void *key, dictEntry ***plink, 
 void dictTwoPhaseUnlinkFree(dict *d, dictEntry *he, dictEntry **plink, int table_index);
 void dictRelease(dict *d);
 dictEntry * dictFind(dict *d, const void *key);
-void *dictFetchValue(dict *d, const void *key);
+
 int dictResize(dict *d);
 void dictSetKey(dict *d, dictEntry* de, void *key);
 void dictSetVal(dict *d, dictEntry *de, void *val);
 void dictSetSignedIntegerVal(dictEntry *de, int64_t val);
-void dictSetUnsignedIntegerVal(dictEntry *de, uint64_t val);
-void dictSetDoubleVal(dictEntry *de, double val);
-int64_t dictIncrSignedIntegerVal(dictEntry *de, int64_t val);
-uint64_t dictIncrUnsignedIntegerVal(dictEntry *de, uint64_t val);
-double dictIncrDoubleVal(dictEntry *de, double val);
+
 void *dictEntryMetadata(dictEntry *de);
 void *dictGetKey(const dictEntry *de);
 void *dictGetVal(const dictEntry *de);
 int64_t dictGetSignedIntegerVal(const dictEntry *de);
-uint64_t dictGetUnsignedIntegerVal(const dictEntry *de);
-double dictGetDoubleVal(const dictEntry *de);
-double *dictGetDoubleValPtr(dictEntry *de);
-size_t dictMemUsage(const dict *d);
-size_t dictEntryMemUsage(void);
+
 dictIterator *dictGetIterator(dict *d);
-dictIterator *dictGetSafeIterator(dict *d);
+
 void dictInitIterator(dictIterator *iter, dict *d);
-void dictInitSafeIterator(dictIterator *iter, dict *d);
+
 void dictResetIterator(dictIterator *iter);
 dictEntry *dictNext(dictIterator *iter);
 void dictReleaseIterator(dictIterator *iter);
 dictEntry *dictGetRandomKey(dict *d);
 dictEntry *dictGetFairRandomKey(dict *d);
 unsigned int dictGetSomeKeys(dict *d, dictEntry **des, unsigned int count);
-void dictGetStats(char *buf, size_t bufsize, dict *d, int full);
+
 uint64_t dictGenHashFunction(const void *key, size_t len);
-uint64_t dictGenCaseHashFunction(const unsigned char *buf, size_t len);
+
 void dictEmpty(dict *d, void(callback)(dict*));
-void dictSetResizeEnabled(dictResizeEnable enable);
+
 int dictRehash(dict *d, int n);
-int dictRehashMilliseconds(dict *d, int ms);
-void dictSetHashFunctionSeed(uint8_t *seed);
-uint8_t *dictGetHashFunctionSeed(void);
-unsigned long dictScan(dict *d, unsigned long v, dictScanFunction *fn, void *privdata);
+
+
 unsigned long dictScanDefrag(dict *d, unsigned long v, dictScanFunction *fn, dictDefragFunctions *defragfns, void *privdata);
-uint64_t dictGetHash(dict *d, const void *key);
-dictEntry *dictFindEntryByPtrAndHash(dict *d, const void *oldptr, uint64_t hash);
+
 int htNeedsResize(dict *dict);
 
 /* Keys hashing / comparison functions for dict.c hash tables. */
@@ -233,10 +222,6 @@ void dictObjectDestructor(dict *privdata, void *val);
 uint64_t dictEncObjHash(const void *key);
 int dictEncObjKeyCompare(dict *privdata, const void *key1, const void *key2);
 
-
-extern dictType dictTypeHeapStringCopyKey;
-extern dictType dictTypeHeapStrings;
-extern dictType dictTypeHeapStringCopyKeyValue;
 extern dictType objectKeyPointerValueDictType;
 extern dictType setDictType;
 extern dictType zsetDictType;
