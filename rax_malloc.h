@@ -1,6 +1,6 @@
-/*
- * Copyright (c) 2009-2012, Pieter Noordhuis <pcnoordhuis at gmail dot com>
- * Copyright (c) 2009-2012, Salvatore Sanfilippo <antirez at gmail dot com>
+/* Rax -- A radix tree implementation.
+ *
+ * Copyright (c) 2017, Salvatore Sanfilippo <antirez at gmail dot com>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -28,31 +28,17 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef __INTSET_H
-#define __INTSET_H
-#include <stdint.h>
-#include <stddef.h>
+/* Allocator selection.
+ *
+ * This file is used in order to change the Rax allocator at compile time.
+ * Just define the following defines to what you want to use. Also add
+ * the include of your alternate allocator if needed (not needed in order
+ * to use the default libc allocator). */
 
-typedef struct intset {
-    uint32_t encoding;
-    uint32_t length;
-    int8_t contents[];
-} intset;
-
-intset *intsetNew(void);
-intset *intsetAdd(intset *is, int64_t value, uint8_t *success);
-intset *intsetRemove(intset *is, int64_t value, int *success);
-uint8_t intsetFind(intset *is, int64_t value);
-int64_t intsetRandom(intset *is);
-int64_t intsetMax(intset *is);
-int64_t intsetMin(intset *is);
-uint8_t intsetGet(intset *is, uint32_t pos, int64_t *value);
-uint32_t intsetLen(const intset *is);
-size_t intsetBlobLen(intset *is);
-int intsetValidateIntegrity(const unsigned char *is, size_t size, int deep);
-
-#ifdef REDIS_TEST
-int intsetTest(int argc, char *argv[], int flags);
+#ifndef RAX_ALLOC_H
+#define RAX_ALLOC_H
+#include "zmalloc.h"
+#define rax_malloc zmalloc
+#define rax_realloc zrealloc
+#define rax_free zfree
 #endif
-
-#endif // __INTSET_H
