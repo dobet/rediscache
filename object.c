@@ -768,6 +768,17 @@ int getLongLongFromObject(robj *o, long long *target) {
     return C_OK;
 }
 
+int getLongFromObject(robj *o, long *target) {
+    long long value;
+
+    if (getLongLongFromObject(o, &value) != C_OK) return C_ERR;
+    if (value < LONG_MIN || value > LONG_MAX) {
+        return C_ERR;
+    }
+    *target = value;
+    return C_OK;
+}
+
 //int getLongLongFromObjectOrReply(client *c, robj *o, long long *target, const char *msg) {
 //    long long value;
 //    if (getLongLongFromObject(o, &value) != C_OK) {
