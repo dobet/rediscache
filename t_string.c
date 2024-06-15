@@ -156,7 +156,7 @@ static int incrDecrCommand(redisCache *redis_cache, robj *kobj, long long incr, 
         new = o;
         o->ptr = (void*)((long)value);
     } else {
-        new = createStringObjectFromLongLongForValue(value);
+        new = createStringObjectFromLongLong(value);
         if (o) {
             dbReplaceValue(redis_cache,kobj,new);
         } else {
@@ -167,7 +167,7 @@ static int incrDecrCommand(redisCache *redis_cache, robj *kobj, long long incr, 
 }
 
 static int incrbyfloatCommand(redisCache *redis_cache, robj *kobj, long double incr, long double *ret) {
-    long double incr, value;
+    long double value;
     robj *o, *new;
 
     o = lookupKeyWrite(redis_cache,kobj);
