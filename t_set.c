@@ -263,7 +263,7 @@ int setTypeConvertAndExpand(robj *setobj, int enc, unsigned long cap, int panic)
             /* If we're converting from intset, we have a better estimate. */
             size_t s1 = lpEstimateBytesRepeatedInteger(intsetMin(setobj->ptr), cap);
             size_t s2 = lpEstimateBytesRepeatedInteger(intsetMax(setobj->ptr), cap);
-            estcap = max(s1, s2);
+            estcap = redis_max(s1, s2);
         }
         unsigned char *lp = lpNew(estcap);
         char *str;
@@ -365,10 +365,10 @@ int setTypeAddAux(robj *set, char *str, size_t len, int64_t llval, int str_is_sd
             if (n != 0) {
                 size_t elelen1 = sdigits10(intsetMax(set->ptr));
                 size_t elelen2 = sdigits10(intsetMin(set->ptr));
-                maxelelen = max(elelen1, elelen2);
+                maxelelen = redis_max(elelen1, elelen2);
                 size_t s1 = lpEstimateBytesRepeatedInteger(intsetMax(set->ptr), n);
                 size_t s2 = lpEstimateBytesRepeatedInteger(intsetMin(set->ptr), n);
-                totsize = max(s1, s2);
+                totsize = redis_max(s1, s2);
             }
             if (intsetLen((const intset *) set->ptr) < SET_MAX_LISTPACK_ENTRIES &&
                 len <= SET_MAX_LISTPACK_VALUE &&
@@ -943,4 +943,46 @@ int RcSRandmember(redisCache db, robj *key, long l, sds **members, unsigned long
     }
 }
 
+static void SMembers(robj *subject,
+                     sds **members,
+                     unsigned long *members_size) {
 
+    *members_size = setTypeSize(subject);
+    *members = (sds *)zcallocate(sizeof(sds) * (*members_size));
+    sds *arrays = *members;
+
+    unsigned long i = 0;
+    sds elesds;
+    int64_t intobj;
+    int encoding;
+    size_t len;
+    setTypeIterator *si = setTypeInitIterator(subject);
+    while((encoding = setTypeNext(si,&elesds, &len, &intobj)) != -1) {
+        if (encoding == OBJ_ENCODING_HT) {
+            arrays[i] = sdsdup(elesds);
+        } else {
+            arrays[i] = sdsfromlonglong(intobj);
+        }
+
+        ++i;
+        if (i >= *members_size) break;
+    }
+    setTypeReleaseIterator(si);
+}
+
+int RcSMembers(redisCache db, robj *key, sds **members, unsigned long *members_size)
+{
+    if (NULL == db || NULL == key || NULL == members) {
+        return REDIS_INVALID_ARG;
+    }
+    redisDb *redis_db = (redisDb*)db;
+
+    robj *subject;
+    if ((subject = lookupKeyRead(redis_db,key)) == NULL || checkType(subject,OBJ_SET)) {
+        return REDIS_KEY_NOT_EXIST;
+    }
+
+    SMembers(subject, members, members_size);
+
+    return C_OK;
+}

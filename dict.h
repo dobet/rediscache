@@ -37,6 +37,7 @@
 #define __DICT_H
 
 
+#include "mt19937-64.h"
 #include <limits.h>
 #include <stdint.h>
 #include <stdlib.h>
@@ -150,7 +151,7 @@ typedef struct {
 #define dictPauseRehashing(d) ((d)->pauserehash++)
 #define dictResumeRehashing(d) ((d)->pauserehash--)
 
-/* If our unsigned long type can store a 64 bit number, use a 64 bit PRNG. */
+///* If our unsigned long type can store a 64 bit number, use a 64 bit PRNG. */
 #if ULONG_MAX >= 0xffffffffffffffff
 #define randomULong() ((unsigned long) genrand64_int64())
 #else

@@ -238,6 +238,10 @@ robj *lookupKeyRead(redisDb *db, robj *key) {
     return lookupKeyReadWithFlags(db,key,LOOKUP_NONE);
 }
 
+int dbExists(redisDb *db, robj *key) {
+    return dictFind(db->dict,key->ptr) != NULL;
+}
+
 /* Lookup a key for write operations, and as a side effect, if needed, expires
  * the key if its TTL is reached. It's equivalent to lookupKey() with the
  * LOOKUP_WRITE flag added.
