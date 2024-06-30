@@ -750,7 +750,7 @@ static int zrangeGenericCommand(redisDb *redis_db,
     return C_OK;
 }
 
-void zrankGenericCommand(redisDb *redis_db, robj *kobj, robj *mobj, long *rank, int reverse) {
+static int zrankGenericCommand(redisDb *redis_db, robj *kobj, robj *mobj, long *rank, int reverse) {
     robj *zobj;
     // robj* reply;
     // int opt_withscore = 0;
