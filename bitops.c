@@ -326,8 +326,8 @@ int RcGetBit(redisCache db, robj *key, size_t bitoffset, long *val) {
 
 /* BITCOUNT key [start end [BIT|BYTE]] */
 // add isbit, if isbit is 1, get BIT, or get BYTE
-int RcBitCount(redisCache db, robj *key, long start, long end, int isbit, long *val, int have_offset) {
-    if (NULL == db || NULL == key || isbit > 1) {
+int RcBitCount(redisCache db, robj *key, long start, long end, long *val, int have_offset) {
+    if (NULL == db || NULL == key) {
         return REDIS_INVALID_ARG;
     }
     redisDb *redis_db = (redisDb*) db;
@@ -353,13 +353,13 @@ int RcBitCount(redisCache db, robj *key, long start, long end, int isbit, long *
             return C_ERR;
         }
 
-        if (isbit) totlen <<= 3;
+
         if (start < 0) start = totlen+start;
         if (end < 0) end = totlen+end;
         if (start < 0) start = 0;
         if (end < 0) end = 0;
         if (end >= totlen) end = totlen-1;
-        if (isbit && start <= end) {
+        if (start <= end) {
             /* Before converting bit offset to byte offset, create negative masks
              * for the edges. */
             first_byte_neg_mask = ~((1<<(8-(start&7)))-1) & 0xFF;
@@ -408,7 +408,7 @@ int RcBitCount(redisCache db, robj *key, long start, long end, int isbit, long *
  * @param offset_status dentifies the number of parameters passed to the command
  * @return the position of the first bit set to 1 or 0 in a string，Note that bit positions are returned always as absolute values starting from bit zero even when start and end are used to specify a range.
  */
-int RcBitPos(redisCache db, robj *key, long bit, long start, long end, int isbit, long *val, int offset_status) {
+int RcBitPos(redisCache db, robj *key, long bit, long start, long end, long *val, int offset_status) {
     if (NULL == db || NULL == key) {
         return REDIS_INVALID_ARG;
     }
@@ -441,17 +441,15 @@ int RcBitPos(redisCache db, robj *key, long bit, long start, long end, int isbit
         if (BIT_POS_START_END_OFFSET == offset_status) {
             end_given = 1;
         } else {
-            if (isbit) end = (totlen<<3) + 7;
-            else end = totlen-1;
+            totlen-1;
         }
-        if (isbit) totlen <<= 3;
         /* Convert negative indexes */
         if (start < 0) start = totlen+start;
         if (end < 0) end = totlen+end;
         if (start < 0) start = 0;
         if (end < 0) end = 0;
         if (end >= totlen) end = totlen-1;
-        if (isbit && start <= end) {
+        if (start <= end) {
             /* Before converting bit offset to byte offset, create negative masks
              * for the edges. */
             first_byte_neg_mask = ~((1<<(8-(start&7)))-1) & 0xFF;
