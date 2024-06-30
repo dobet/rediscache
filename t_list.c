@@ -928,3 +928,14 @@ int RcLRem(redisCache db, robj *key, long count, robj *val) {
 
     return C_OK;
 }
+
+int RcRPop(redisCache db, robj *key, sds *element)
+{
+    if (NULL == db || NULL == key) {
+        return REDIS_INVALID_ARG;
+    }
+    redisDb *redis_db = (redisDb*)db;
+
+    return popGenericCommand(redis_db, key, element, 1, REDIS_LIST_TAIL);
+}
+

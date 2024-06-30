@@ -133,10 +133,10 @@ typedef long long mstime_t; /* millisecond time type. */
 #define ZSET_MAX_LISTPACK_VALUE     64
 
 /* min/max */
-#undef min
-#undef max
-#define min(a, b) ((a) < (b) ? (a) : (b))
-#define max(a, b) ((a) > (b) ? (a) : (b))
+#undef redis_min
+#undef redis_max
+#define redis_min(a, b) ((a) < (b) ? (a) : (b))
+#define redis_max(a, b) ((a) > (b) ? (a) : (b))
 
 
 // redisdb config
