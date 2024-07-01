@@ -943,4 +943,45 @@ int RcSRandmember(redisCache db, robj *key, long l, sds **members, unsigned long
     }
 }
 
+static void SMembers(robj *subject,
+                     sds **members,
+                     unsigned long *members_size) {
 
+    *members_size = setTypeSize(subject);
+    *members = (sds *)zcallocate(sizeof(sds) * (*members_size));
+    sds *arrays = *members;
+
+    unsigned long i = 0;
+    sds elesds;
+    int64_t intobj;
+    int encoding;
+    setTypeIterator *si = setTypeInitIterator(subject);
+    while((encoding = setTypeNext(si,&elesds,&intobj)) != -1) {
+        if (encoding == OBJ_ENCODING_HT) {
+            arrays[i] = sdsdup(elesds);
+        } else {
+            arrays[i] = sdsfromlonglong(intobj);
+        }
+
+        ++i;
+        if (i >= *members_size) break;
+    }
+    setTypeReleaseIterator(si);
+}
+
+int RcSMembers(redisCache db, robj *key, sds **members, unsigned long *members_size)
+{
+    if (NULL == db || NULL == key || NULL == members) {
+        return REDIS_INVALID_ARG;
+    }
+    redisDb *redis_db = (redisDb*)db;
+
+    robj *subject;
+    if ((subject = lookupKeyRead(redis_db,key)) == NULL || checkType(subject,OBJ_SET)) {
+        return REDIS_KEY_NOT_EXIST;
+    }
+
+    SMembers(subject, members, members_size);
+
+    return C_OK;
+}
