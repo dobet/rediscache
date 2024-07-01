@@ -955,8 +955,9 @@ static void SMembers(robj *subject,
     sds elesds;
     int64_t intobj;
     int encoding;
+    size_t len;
     setTypeIterator *si = setTypeInitIterator(subject);
-    while((encoding = setTypeNext(si,&elesds,&intobj)) != -1) {
+    while((encoding = setTypeNext(si,&elesds, &len, &intobj)) != -1) {
         if (encoding == OBJ_ENCODING_HT) {
             arrays[i] = sdsdup(elesds);
         } else {
