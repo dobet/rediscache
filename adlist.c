@@ -358,7 +358,7 @@ listNode *listIndex(list *list, long index) {
 }
 
 /* Rotate the list removing the tail node and inserting it to the head. */
-void listRotateTailToHead(list *list) {
+void listRotate(list *list) {
     if (listLength(list) <= 1) return;
 
     /* Detach current tail */
