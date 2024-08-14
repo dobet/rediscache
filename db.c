@@ -170,9 +170,7 @@ robj *lookupKey(redisDb *db, robj *key, int flags) {
          * It's possible that the WRITE flag is set even during a readonly
          * command, since the command may trigger events that cause modules to
          * perform additional writes. */
-//        int is_ro_replica = server.masterhost && server.repl_slave_ro;
         int expire_flags = 0;
-//        if (flags & LOOKUP_WRITE && !is_ro_replica)
         if (flags & LOOKUP_WRITE)
             expire_flags |= EXPIRE_FORCE_DELETE_EXPIRED;
         if (flags & LOOKUP_NOEXPIRE)
@@ -206,10 +204,7 @@ robj *lookupKey(redisDb *db, robj *key, int flags) {
             atomicIncr(g_db_status.stat_keyspace_hits, 1);
         /* TODO: Use separate hits stats for WRITE */
     } else {
-//        if (!(flags & (LOOKUP_NONOTIFY | LOOKUP_WRITE)))
-//            notifyKeyspaceEvent(NOTIFY_KEY_MISS, "keymiss", key, db->id);
         if (!(flags & (LOOKUP_NOSTATS | LOOKUP_WRITE)))
-//            server.stat_keyspace_misses++;
             atomicIncr(g_db_status.stat_keyspace_misses, 1);
         return NULL;
         /* TODO: Use separate misses stats and notify event for WRITE */
@@ -269,13 +264,9 @@ static void dbAddInternal(redisDb *db, robj *key, robj *val, int update_if_exist
         dbSetValue(db, key, val, 1, existing);
         return;
     }
-//    serverAssertWithInfo(NULL, key, de != NULL);
+
     dictSetKey(db->dict, de, sdsdup(key->ptr));
-//    initObjectLRUOrLFU(val);
     dictSetVal(db->dict, de, val);
-//    signalKeyAsReady(db, key, val->type);
-//    if (server.cluster_enabled) slotToKeyAddEntry(de, db);
-//    notifyKeyspaceEvent(NOTIFY_NEW,"new",key,db->id);
 }
 
 void dbAdd(redisDb *db, robj *key, robj *val) {

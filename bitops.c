@@ -268,7 +268,7 @@ int RcGetBit(redisCache db, robj *key, size_t bitoffset, long *val) {
     if (NULL == db || NULL == key) {
         return REDIS_INVALID_ARG;
     }
-    redisDb *redis_db = (redisDb*) db;
+    redisDb *redis_db = (redisDb*)db;
 
     robj *o;
     if ((o = lookupKeyRead(redis_db, key)) == NULL ||
@@ -411,7 +411,7 @@ int RcBitPos(redisCache db, robj *key, long bit, long start, long end, long *val
         if (BIT_POS_START_END_OFFSET == offset_status) {
             end_given = 1;
         } else {
-            totlen-1;
+            end = totlen-1;
         }
         /* Convert negative indexes */
         if (start < 0) start = totlen+start;
